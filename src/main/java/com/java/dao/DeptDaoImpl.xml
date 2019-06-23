@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+	namespace：命名空间，其值为某一个dao层类的具体路径
+ -->
+<mapper namespace="com.java.dao.DeptDaoImpl">
+    <!-- sql语句保存在Mybatis的局部配置文件中 -->
+    <!--
+        select标签存放查询语句(List<User>)
+            id:在整个配置文件中id值必须唯一，其值与dao层类中的方法名保持一致
+            resultType：指定当前sql查询语句返回的数据类型。类型不是为sql语句的最终类型，而是某一条数据的类型
+            parameterType:指定参数类型
+            Map map java.util.Map都可以。查询多条map时，会自动封装list
+     -->
+    <select id="selectDept" resultType="map">
+        SELECT * FROM DEPT
+    </select>
+
+    <!--查询一条数据-->
+    <select id="select1" resultType="map">
+        SELECT * FROM DEPT WHERE ROWNUM = 1
+    </select>
+
+    <!--查询一条数据 带一个参数-->
+    <select id="select2" resultType="map" parameterType="int">
+        SELECT * FROM DEPT WHERE DEPTNO = #{0}
+    </select>
+
+    <!--查询一条数据 带多个参数-->
+    <select id="select3" resultType="map" parameterType="map">
+        SELECT * FROM DEPT WHERE DEPTNO &lt; #{deptno1} AND DEPTNO &gt; #{deptno2} AND LOC = #{loc}
+    </select>
+
+    <!--查询一条数据 带多个参数-->
+    <select id="select4" resultType="map" parameterType="com.java.pojo.Dept">
+        SELECT * FROM DEPT WHERE DEPTNO &lt; #{deptno1} AND DEPTNO &gt; #{deptno2} AND LOC = #{loc}
+    </select>
+
+    <!--查询多条数据 带多个参数-->
+    <select id="select5" resultType="dept" parameterType="dept">
+        SELECT * FROM DEPT WHERE DEPTNO &lt; #{deptno1} AND DEPTNO &gt; #{deptno2} AND LOC = #{loc}
+    </select>
+
+    <!--添加一条数据 备注：增删改标签不需要显示返回值类型，默认类型都为int（影响行数）-->
+    <insert id="insert1" parameterType="map">
+        INSERT INTO DEPT VALUES (#{deptno},#{dname},#{loc})
+    </insert>
+
+    <!--删除一条数据-->
+    <delete id="delete1" parameterType="int">
+        DELETE FROM DEPT WHERE DEPTNO = #{0}
+    </delete>
+
+    <!--修改一条数据-->
+    <update id="update1" parameterType="String">
+        UPDATE DEPT SET DEPTNO = 50 WHERE LOC = #{0}
+    </update>
+
+    <!--模糊查询-->
+    <select id="selectMH" parameterType="map" resultType="map">
+        SELECT DEPTNO,DNAME,LOC FROM DEPT WHERE DNAME LIKE CONCAT(CONCAT('%',#{dname}),'%') AND DEPTNO <![CDATA[<= ]]>#{deptno}
+    </select>
+</mapper>
